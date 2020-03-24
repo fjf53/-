@@ -1,0 +1,53 @@
+function ajax(opt) {       
+	opt = opt || {};       
+	opt.method = opt.method.toUpperCase() || 'POST'; //请求方法       
+	opt.url = opt.url || ''; //请求地址        
+	opt.async = opt.async || true; //是否异步请求       
+	opt.data = opt.data || null; //传输数据        
+	opt.success = opt.success || function() {}; //服务器响应成功进行相应的处理       
+	var xmlHttp = null;       
+	if(XMLHttpRequest) {         
+		xmlHttp = new XMLHttpRequest(); //服务器请求对象	       
+	}       
+	else {         
+		xmlHttp = new ActiveXObject('Microsoft.XMLHTTP'); //兼容微软请求对象	       
+	}
+	var params = [];       
+	for(var key in opt.data) {         
+		params.push(key + '=' + opt.data[key]);       
+	}       
+	var postData = params.join('&');       
+	if(opt.method.toUpperCase() === 'POST') { //请求方法为POST,则执行如下操作
+		         
+		xmlHttp.open(opt.method, opt.url, opt.async);         
+		xmlHttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded;charset=utf-8');         
+		xmlHttp.send(postData);       
+	}       
+	else if(opt.method.toUpperCase() === 'GET') { //请求方法为GET,则执行如下操作
+		         
+		xmlHttp.open(opt.method, opt.url + '?' + postData, opt.async);         
+		xmlHttp.send(null);       
+	}        
+	xmlHttp.onreadystatechange = function() {         
+		if(xmlHttp.readyState == 4 && xmlHttp.status == 200) { //响应是否成功
+			            
+			var data = JSON.parse(xmlHttp.responseText);           
+			opt.success(data);         
+		}       
+	};  
+}   
+
+
+<script type="text/javascript">
+           //调用方法
+ ajax({
+	method: 'get', //请求方法post或者get
+	url: "http://127.0.0.1/public/index.php/index/index/a",
+	data: { //参数
+	
+	},
+	success: function(data) {                 
+	  	console.log(data)               
+	}
+});
+</script>
